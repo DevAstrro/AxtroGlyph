@@ -1,0 +1,9 @@
+<resources>
+    <style name="Theme.AxtroGlyph" parent="android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:colorAccent">#D6E8FF</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:statusBarColor">#090A0D</item>
+        <item name="android:navigationBarColor">#090A0D</item>
+    </style>
+</resources>
