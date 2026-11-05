@@ -1,52 +1,48 @@
 # Axtro Glyph
 
-A lightweight, privacy-first Android prototype for a live battery/charging meter, initially targeting Nothing Phone (2a).
+A lightweight Android prototype for live battery charging progress on Nothing Phone (2a).
 
-> **Current status:** The app reads Android battery state and displays it in the app. It does **not** yet control the rear Glyph LEDs. The official Nothing Glyph SDK/API, supported device permissions, and screen-off behaviour must be verified on a real Phone (2a) before claiming hardware support.
+## Current implementation
+- Includes the official Nothing Glyph Developer Kit 2.0 AAR in `app/libs/`.
+- Uses Android's event-driven battery-change broadcast (no polling loop).
+- Initialises and registers the Nothing Glyph SDK for Phone (2a).
+- Opens a Glyph session and maps charging percentage to the Phone (2a) C-series progress arc.
+- Turns the Glyph off when the device is not charging.
+- Minimal Jetpack Compose UI; no ads, analytics, network permission, or third-party runtime services.
 
-## Features
-- Live battery percentage via Android's sticky `ACTION_BATTERY_CHANGED` broadcast (no polling loop).
-- Charging/full-state detection.
-- Minimal dark Jetpack Compose UI.
-- No ads, analytics, network permission, database, or background polling.
-- GitHub Actions builds a debug APK on pushes, pull requests, and manual runs.
+## Important limitations
+- **Hardware behaviour is not yet verified on a physical device.** The next test must confirm SDK registration, the C-series progress output, and LED brightness.
+- Nothing's official SDK currently documents third-party Glyph control as foreground-app-only. This prototype updates while Axtro Glyph is open; it does not claim continuous screen-off operation. An Android foreground service does not automatically override that SDK restriction.
+- The manifest currently uses the SDK's documented debug key `test`. For a production build, follow Nothing's current API-key guidance for the Android version/device being targeted.
+- The app currently targets Phone (2a) only (model code A142 / SDK device constant `DEVICE_23111`).
 
-## Get the APK
-1. Open the repository's **Actions** tab.
-2. Select the latest **Android APK** workflow run.
+## Build APK
+Every push to `main`, pull request, or manual workflow dispatch runs GitHub Actions.
+
+1. Open the **Actions** tab.
+2. Select **Android APK** and open the latest run.
 3. Download the `axtro-glyph-debug-apk` artifact.
-4. Extract it and install `app-debug.apk` on your test phone.
+4. Extract `app-debug.apk` and install it on the Phone (2a).
 
 This is a debug APK, not a Play Store release.
 
-## Build locally
+## Local build
 Requirements: JDK 17, Android SDK platform 35, Gradle 8.11.1.
 
 ```bash
 gradle --no-daemon :app:assembleDebug
 ```
 
-APK: `app/build/outputs/apk/debug/app-debug.apk`.
+APK output: `app/build/outputs/apk/debug/app-debug.apk`.
 
-## Glyph hardware roadmap
-1. Obtain the official Nothing Glyph Developer Kit compatible with Phone (2a).
-2. Add the exact SDK artifact and permission/key configuration from Nothing's current documentation.
-3. Implement its supported progress API and map battery percentage to Phone (2a) LED zones.
-4. Test foreground operation on-device first.
-5. Separately test screen-off/background operation. A foreground service must not be assumed to bypass SDK foreground-app restrictions.
-6. Add a clear enable/disable setting and rate-limit updates.
+## SDK
+The included AAR is from the official [Nothing Glyph Developer Kit](https://github.com/Nothing-Developer-Programme/Glyph-Developer-Kit). See its README for API lifecycle, supported devices, and restrictions.
 
-## Lightweight design
-- No periodic timer or polling.
-- Battery state updates are event-driven.
-- No internet permission or background service in this prototype.
-- No analytics, crash reporting, ads, or third-party runtime SDKs.
-- Compose state changes only when battery values change.
+## Privacy and efficiency
+- No internet permission.
+- No analytics, ads, crash reporting, or account system.
+- Battery changes are event-driven; no periodic polling.
+- Glyph session is closed and SDK unbound when the activity is destroyed.
 
-## Project
-- Package: `space.axtro.glyph`
-- Minimum Android: API 34
-- Target Android: API 35
-- Kotlin + Jetpack Compose + Material 3
-
-MIT License. See [LICENSE](LICENSE).
+## Stack
+Kotlin · Jetpack Compose · Material 3 · Nothing Glyph SDK 2.0 · Android API 34+
