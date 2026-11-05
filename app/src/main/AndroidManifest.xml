@@ -1,9 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="com.nothing.ketchum.permission.ENABLE" />
     <application
         android:allowBackup="false"
         android:label="Axtro Glyph"
         android:supportsRtl="true"
         android:theme="@style/Theme.AxtroGlyph">
+        <meta-data android:name="NothingKey" android:value="test" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
